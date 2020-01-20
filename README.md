@@ -15,7 +15,7 @@ Based on the_synth by dzlonline : https://github.com/dzlonline/the_synth
 * the_synth : https://github.com/dzlonline/the_synth
 
 # Schematics
-[Schematics](documentations/schematics.png)
+![Schematics](documentations/schematics.png)
 
 # Demo
-[https://www.youtube.com/watch?v=l1WhdirNEj4](documentations/thumbnail.png)
+[![Thumbnail](documentations/thumbnail.png)](https://www.youtube.com/watch?v=l1WhdirNEj4)
