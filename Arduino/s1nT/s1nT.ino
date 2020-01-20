@@ -13,14 +13,16 @@
   Libraries Used:
   AceButton : https://github.com/bxparks/AceButton
   the_synth : https://github.com/dzlonline/the_synth
+  U8x8      : https://github.com/olikraus/u8g2
 
 */
 
 #include <AceButton.h> // Manage Buttons
 #include <synth.h> //The Synth library
 #include <Wire.h>
-#include <U8x8lib.h>
+#include <U8x8lib.h> // OLED Library
 
+// Struct for instrument
 struct Instrument {
   String name;
   int wave;
@@ -29,14 +31,14 @@ struct Instrument {
   int mod;
 };
 
-
+// Struct of buttons
 struct Key {
   const uint8_t pin;
   const uint8_t midiNote;
 };
 
-#include "settings.h"
-#include "instruments.h"
+#include "settings.h" // Settings
+#include "instruments.h" // Instruments
 
 using namespace ace_button;
 synth edgar;
@@ -55,13 +57,14 @@ int mod_basic = 0; // Calibration for Joystic Tx
 int last_note[4] = {0, 0, 0, 0}; // Last played note
 int current_instrument = 0; // Selected instruments
 
+// Mapping wave number to wave name
 const String WAVE_NAME[6] = {
-  "SIN",
-  "TRIANGLE",
-  "SQUARE",
-  "SAW",
-  "RAMP",
-  "NOISE"
+  "SIN", // 0
+  "TRIANGLE", // 1
+  "SQUARE", // 2
+  "SAW", // 3
+  "RAMP", // 4
+  "NOISE" // 5
 };
 
 AceButton buttons[NB_BUTTONS];
@@ -80,7 +83,7 @@ void setup() {
   load_instrument(); // Load instrument
 }
 
-// Settings buttons as pullup
+// Settings buttons as pullup and add a function to handle click event
 void init_buttons() {
   pinMode(13, INPUT_PULLUP);
   for (int i = 0; i < NB_BUTTONS; i++) {
@@ -140,13 +143,13 @@ void load_instrument() {
 
 void loop() {
   for (uint8_t i = 0; i < NB_BUTTONS; i++) {
-    buttons[i].check();
+    buttons[i].check(); // Get Buttons state
   }
   if (pitch_bend) {
-    pitch_bend_check();
+    pitch_bend_check(); // Get Joystick Pitch Bend state
   }
   if (mod_bend) {
-    mod_bend_check();
+    mod_bend_check(); // Get Joystick Modulation State
   }
 }
 
@@ -211,9 +214,9 @@ void mod_bend_check() {
 
 // Event handle for buttons press
 void handleEvent(AceButton* button, uint8_t eventType, uint8_t buttonState) {
-  if (eventType == 0) {
+  if (eventType == 0) { //Event clicked
     int note = button->getId();
-    if (note < 250) {
+    if (note < 250) { // If note is not a function note
       edgar.setLength(note_playing, instruments[current_instrument].sustain);
       note = note + (8 * transpose);
       edgar.mTrigger(note_playing, note);
@@ -226,7 +229,7 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t buttonState) {
         note_playing = 0;
       }
     } else {
-      if (note == 250) {
+      if (note == 250) { // Transpose button -
         if (transpose > 0) {
           transpose--;
           Serial.println("TRANPOSE -");
@@ -234,7 +237,7 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t buttonState) {
           print_screen();
         }
       }
-      if (note == 251) {
+      if (note == 251) { // Transpose button +
         if (transpose <= 12) {
           Serial.println("TRANPOSE +");
           transpose++;
@@ -242,14 +245,14 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t buttonState) {
           print_screen();
         }
       }
-      if (note == 252) {
+      if (note == 252) { // Instrument button +
         Serial.println("INSTRUMENT +");
         if (current_instrument < NB_INSTRUMENTS - 1) {
           current_instrument++;
           load_instrument();
         }
       }
-      if (note == 253) {
+      if (note == 253) { // Instrument button -
         Serial.println("INSTRUMENT -");
         if (current_instrument > 0) {
           current_instrument--;
@@ -258,16 +261,16 @@ void handleEvent(AceButton* button, uint8_t eventType, uint8_t buttonState) {
       }
     }
   }
-  if (eventType == 1) {
+  if (eventType == 1) { //Event Release
     int note = button->getId();
     if (note < 250) {
-      note = button->getId() + (8 * transpose);;
+      note = button->getId() + (8 * transpose);
       //Serial.print("NOTE:");
       //Serial.print(note);
       for (int i = 0; i < 4; i++) {
         //Serial.print(" I:");
         //Serial.print(last_note[i]);
-        if (last_note[i] == note) {
+        if (last_note[i] == note) { // Release notes ( Warning: not mapped correctly)
           Serial.print(instruments[current_instrument].name);
           Serial.print(" NOTE OFF:");
           Serial.println(note);
