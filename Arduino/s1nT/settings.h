@@ -1,5 +1,5 @@
-const bool pitch_bend = true; // Is A0 used as Pitch bend
-const bool mod_bend = true;   // Is A1 used as Modulation
+const bool pitch_bend = false; // Is A0 used as Pitch bend
+const bool mod_bend = false;   // Is A1 used as Modulation
 int transpose = 3; //Default Tranpose value
 
 /* Keys mapping */
