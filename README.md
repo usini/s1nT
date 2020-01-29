@@ -1,4 +1,7 @@
 # s1nT : A 4-Voice Polyphonic Synthetizer for Arduino
+
+![Photo](documentations/s1nt_photo_closeup.jpg)
+
 ```
           _          ______
          /' \        /\__  _\
