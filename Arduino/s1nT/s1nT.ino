@@ -85,7 +85,7 @@ void setup() {
 
 // Settings buttons as pullup and add a function to handle click event
 void init_buttons() {
-  pinMode(13, INPUT_PULLUP);
+  pinMode(A3, INPUT_PULLUP);
   for (int i = 0; i < NB_BUTTONS; i++) {
     pinMode(keys[i].pin, INPUT_PULLUP);
     buttons[i].init(keys[i].pin, HIGH, keys[i].midiNote);
@@ -105,8 +105,8 @@ void print_screen() {
 
 // Calibrate Joystick
 void init_pot() {
-  pitch_basic = analogRead(A0);
-  mod_basic = analogRead(A1);
+  pitch_basic = analogRead(A1);
+  mod_basic = analogRead(A2);
 }
 
 // Load Instrument, setup 4-voice and envelope
@@ -156,9 +156,9 @@ void loop() {
 
 // Read Joystick Rx
 void pitch_bend_check() {
-  int a0_val = analogRead(A0);
+  int a0_val = analogRead(A1);
   int precision = 4;
-  if (!digitalRead(13)) {
+  if (!digitalRead(A3)) {
     precision = 8;
   }
   pitch_incourse = true;
@@ -187,9 +187,9 @@ void pitch_bend_check() {
 
 //Read Joystick Ry
 void mod_bend_check() {
-  int a1_val = analogRead(A1);
+  int a1_val = analogRead(A2);
   int precision = 3;
-  if (!digitalRead(13)) {
+  if (!digitalRead(A3)) {
     precision = 6;
   }
   if ((a1_val > mod_basic + 30) || (a1_val < mod_basic - 30)) {
